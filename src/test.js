@@ -1,25 +1,31 @@
+const axios = require('axios')
+require('dotenv').config()
 
-(async () => {
-    try {
-      const response = await fetch('https://api.scraperapi.com/structured/twitter/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          apiKey: '21b0e69effefec765746122401e76a2d',
-          urls: ["https://x.com/xqc"],
-          apiParams: {"country_code":"eu","device_type":"desktop","session_number":"123","autoparse":"true"}
-        })
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching data:', error.message);
+const getTiktokAccessToken = async () => {
+  const client_key = process.env.TIKTOK_CLIENT_KEY;
+  const client_secret = process.env.TIKTOK_CLIENT_SECRET;
+  const tiktok_token_url = "https://open.tiktokapis.com/v2/oauth/token/";
+
+  const params = new URLSearchParams();
+  params.append('client_key', client_key);
+  params.append('client_secret', client_secret);
+  params.append('grant_type', 'client_credentials');
+
+  try {
+    const response = await axios.post(tiktok_token_url, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    console.log(response.data);
+  } catch (error) {
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else {
+      console.error('Error message:', error.message);
     }
-  })();
+  }
+};
+
+getTiktokAccessToken();

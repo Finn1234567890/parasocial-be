@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node src/test.js",
+    "twitch-user-id": "node src/scripts/fetchTwitchUserId.js",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +16,7 @@
     "@supabase/supabase-js": "^2.44.3",
     "axios": "^1.7.2",
     "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
     "node-cron": "^3.0.3",
     "twitter-api-sdk": "^1.2.1"
   }
