@@ -1,0 +1,1 @@
+Make sure to update twitch app access token every 30 days and tiktok client access token every 2 hours

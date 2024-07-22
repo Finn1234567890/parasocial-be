@@ -3,21 +3,21 @@ const creators = [
       "creator": 'xQc',
       "youtube": "UCmDTrq0LNgPodDOFZiSbsww",
       "reddit": 'xqcow',
-      "twitch": "",
+      "twitch": "71092938",
       "tiktok": ""
     },
     {
       "creator": 'AsmongoldTV',
       "youtube": "UCQeRaTukNYft1_6AZPACnog",
       "reddit": 'Asmongold',
-      "twitch": "",
+      "twitch": "552120296",
       "tiktok": ""
     },
     { 
       "creator": 'Ludwig',
       "youtube": "UCrPseYLGpNygVi34QpGNqpA",
       "reddit": "LudwigAhgren",
-      "twitch": "",
+      "twitch": null,
       "tiktok": ""
     }
   ]

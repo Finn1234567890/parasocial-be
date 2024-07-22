@@ -4,7 +4,6 @@ const cron = require('node-cron')
 
 
 
-
 setCreatorData()  //initial run of the data base population when starting script
 
 cron.schedule('*/15 * * * *', () => { //running data base population every 15 minutes 
