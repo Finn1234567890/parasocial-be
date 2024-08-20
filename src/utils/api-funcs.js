@@ -64,7 +64,7 @@ const getTwitchAppAccessToken = async () => {
 };
 
 const fetchYoutubeData = async (channelId) => {
-  const key = "AIzaSyBzlGDjJqAYuxLahs2l3Bshk87ELTgvAR0";
+  const key = "AIzaSyDAkEd_GkB5hiD4Y4fmAnkqCNqSU6bchCw";
 
   try {
     const videoResponse = await axios.get(
@@ -115,20 +115,35 @@ const fetchRedditData = async (subredditName) => {
     );
 
     // Extract the hottest post from the response
-    const hottestPost = response.data.data.children[0].data; // access the first post in the top posts
-    // access the first post in the search results
+    const hottestPost = response.data.data.children[0].data;
 
+    // Determine the best thumbnail URL
+    let thumbnailUrl = hottestPost.thumbnail;
+
+    // Check for a better image in the preview field
+    if (hottestPost.preview && hottestPost.preview.images.length > 0) {
+      const highestRes = hottestPost.preview.images[0].resolutions.length - 1
+      thumbnailUrl = hottestPost.preview.images[0].resolutions[highestRes].url 
+
+      thumbnailUrl = decodeURIComponent(thumbnailUrl);
+
+      // Replace HTML entities like &amp; with &
+      thumbnailUrl = thumbnailUrl.replace(/&amp;/g, '&');
+    }
+
+    // Decode the URL if necessary
+    
     // Store information of latest reddit post as an object
     const postDetails = {
       title: hottestPost.title,
-      url: "www.reddit.com" + hottestPost.permalink,
-      thumbnail: hottestPost.thumbnail,
+      url: "https://www.reddit.com" + hottestPost.permalink,
+      thumbnail: thumbnailUrl,
       author: hottestPost.author,
       subreddit: hottestPost.subreddit,
     };
 
     console.log(
-      "Successful Reddit API call for " + subredditName + " at " + currentDate
+      "Successful Reddit API call for " + subredditName + " at " + new Date().toLocaleString()
     );
     return postDetails;
   } catch (error) {
@@ -138,6 +153,8 @@ const fetchRedditData = async (subredditName) => {
     );
   }
 };
+
+
 
 const fetchTwitchData = async (userId) => {
   if (userId === null) {
@@ -165,17 +182,25 @@ const fetchTwitchData = async (userId) => {
     if (data === undefined) {
       //this means the streamer is currently not live
       data = await fetchTwitchBroadcast(userId);
+  
 
       if (data) {
+        const thumbnailUrl = data.thumbnail_url
+          .replace('%{width}', '1920')
+          .replace('%{height}', '1080');
+
+          
+
         streamDetails = {
           creator: data.user_name,
           url: data.url, //ony exists on broadcast
           title: data.title,
           game: data.game_name, //TODO: not working properly
           type: data.type,
-          thumbnail: data.thumbnail_url,
+          thumbnail: thumbnailUrl,
           duration: data.duration, //only exists on broadcast
         };
+
       } else {
         console.log(
           userId +
@@ -183,15 +208,21 @@ const fetchTwitchData = async (userId) => {
         );
       }
     } else {
-      streamDetails = {
-        creator: data.user_name,
-        url: `https://www.twitch.tv/${data.user_name}`, //ony exists on broadcast
-        title: data.title,
-        game: null,
-        type: data.type,
-        thumbnail: data.thumbnail_url,
-        duration: null, //only exists on broadcast
-      };
+      const thumbnailUrl = data.thumbnail_url
+      .replace('{width}', '1920')
+      .replace('{height}', '1080');
+    
+
+    
+    streamDetails = {
+      creator: data.user_name,
+      url: `https://www.twitch.tv/${data.user_name}`, //only exists on broadcast
+      title: data.title,
+      game: null,
+      type: data.type,
+      thumbnail: thumbnailUrl,
+      duration: null, //only exists on broadcast
+    }; 
     }
 
     return streamDetails;
