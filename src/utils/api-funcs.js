@@ -64,7 +64,7 @@ const getTwitchAppAccessToken = async () => {
 };
 
 const fetchYoutubeData = async (channelId) => {
-  const key = "AIzaSyDAkEd_GkB5hiD4Y4fmAnkqCNqSU6bchCw";
+  const key = 'AIzaSyDAkEd_GkB5hiD4Y4fmAnkqCNqSU6bchCw';
 
   try {
     const videoResponse = await axios.get(
