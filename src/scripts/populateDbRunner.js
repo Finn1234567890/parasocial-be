@@ -5,14 +5,17 @@ const { supabase } = require("../lib/supabase.js");
 const setCreatorData = async () => {
   console.log("executing cron job db-population-runner..." + new Date());
 
-  const { data, error } = await supabase.from("creators-data").select();
+  const reddit = fetchRedditData('xqcow')
 
+  const { data, error } = await supabase.from("creators-data").select();
   if (data) {
     console.log('Checking total of ' + data.length + ' creators');
     console.log('--------------------------------------------------')
     data.map(async (creator, index) => {
       const youtubeData = await fetchYoutubeData(creator.youtube);
+
       const redditData = await fetchRedditData(creator.reddit);
+      
       const twitchData = await fetchTwitchData(creator.twitch);
 
       const { error } = await supabase

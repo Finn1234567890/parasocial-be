@@ -1,7 +1,32 @@
 const axios = require("axios");
+const qs = require('qs')
 require("dotenv").config();
 
-const currentDate = new Date();
+
+// Function to get access token
+const getRedditAccessToken = async () => {
+  const tokenUrl = 'https://www.reddit.com/api/v1/access_token';
+  const credentials = Buffer.from(`${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`).toString('base64');
+
+  const data = qs.stringify({
+    grant_type: 'password',
+    username: process.env.REDDIT_USERNAME,
+    password: process.env.REDDIT_PASSWORD,
+  });
+
+  const headers = {
+    Authorization: `Basic ${credentials}`,
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  try {
+    const response = await axios.post(tokenUrl, data, { headers });
+    return response.data.access_token;
+  } catch (error) {
+    console.error('Error obtaining access token:', error.response.data);
+    throw new Error('Failed to obtain access token');
+  }
+};
 
 //function to get tiktok client access token
 const getTiktokAccessToken = async () => {
@@ -83,9 +108,7 @@ const fetchYoutubeData = async (channelId) => {
 
     console.log(
       "Successful Youtube API call for " +
-        videoDetails.channelName +
-        " at " +
-        currentDate
+        videoDetails.channelName 
     );
     return videoDetails;
   } catch (error) {
@@ -98,61 +121,46 @@ const fetchYoutubeData = async (channelId) => {
 
 const fetchRedditData = async (subredditName) => {
   try {
-    const redditEndpoint = "https://www.reddit.com/";
-    const subredditEndpoint = `r/${subredditName}/`;
-    const params = {
-      sort: "top", // sort by top posts
-      t: "day", // within the last day
-      limit: 1, // limit to 1 result (the hottest post)
+    const token = await getRedditAccessToken();
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'User-Agent': `subbit/1.0 by ${process.env.REDDIT_USERNAME}`,
     };
 
-    // Make GET request to Reddit API
     const response = await axios.get(
-      `${redditEndpoint}${subredditEndpoint}top.json`,
-      {
-        params: params,
-      }
+      `https://oauth.reddit.com/r/${subredditName}/hot?limit=1`,
+      { headers }
     );
 
-    // Extract the hottest post from the response
     const hottestPost = response.data.data.children[0].data;
 
-    // Determine the best thumbnail URL
-    let thumbnailUrl = hottestPost.thumbnail;
+    let thumbnailUrl = '';
+    if (hottestPost.preview && hottestPost.preview.images) {
+      const highestRes = hottestPost.preview.images[0].resolutions.length - 1;
+      thumbnailUrl = hottestPost.preview.images[0].resolutions[highestRes].url;
 
-    // Check for a better image in the preview field
-    if (hottestPost.preview && hottestPost.preview.images.length > 0) {
-      const highestRes = hottestPost.preview.images[0].resolutions.length - 1
-      thumbnailUrl = hottestPost.preview.images[0].resolutions[highestRes].url 
-
-      thumbnailUrl = decodeURIComponent(thumbnailUrl);
-
-      // Replace HTML entities like &amp; with &
-      thumbnailUrl = thumbnailUrl.replace(/&amp;/g, '&');
+      // Decode the URL and replace HTML entities
+      thumbnailUrl = decodeURIComponent(thumbnailUrl).replace(/&amp;/g, '&');
     }
 
-    // Decode the URL if necessary
-    
-    // Store information of latest reddit post as an object
+    // Store information of the hottest Reddit post as an object
     const postDetails = {
       title: hottestPost.title,
       url: "https://www.reddit.com" + hottestPost.permalink,
+      text: hottestPost.selftext,
       thumbnail: thumbnailUrl,
       author: hottestPost.author,
       subreddit: hottestPost.subreddit,
     };
 
-    console.log(
-      "Successful Reddit API call for " + subredditName + " at " + new Date().toLocaleString()
-    );
-    return postDetails;
+    console.log("Successful Reddit API call for " + subredditName)
+    return postDetails; // Return the post details object
   } catch (error) {
-    console.error(
-      "Error fetching data from Reddit API for :" + subredditName,
-      error
-    );
+    console.log("Error fetching data from Reddit API for subreddit: " + subredditName, error.message);
   }
 };
+
 
 
 
@@ -176,7 +184,7 @@ const fetchTwitchData = async (userId) => {
     let streamDetails;
 
     console.log(
-      "Successful Twitch API call for " + userId + " at " + currentDate
+      "Successful Twitch API call for " + userId 
     );
 
     if (data === undefined) {
