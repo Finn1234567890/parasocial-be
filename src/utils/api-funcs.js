@@ -128,12 +128,20 @@ const fetchRedditData = async (subredditName) => {
       'User-Agent': `subbit/1.0 by ${process.env.REDDIT_USERNAME}`,
     };
 
+    // Fetch the top 10 hot posts to have more posts to choose from
     const response = await axios.get(
-      `https://oauth.reddit.com/r/${subredditName}/hot?limit=1`,
+      `https://oauth.reddit.com/r/${subredditName}/hot?limit=10`,
       { headers }
     );
 
-    const hottestPost = response.data.data.children[0].data;
+    // Find the first post that is not a community highlight
+    const hottestPost = response.data.data.children
+      .map(post => post.data)
+      .find(post => !post.stickied); // Assuming community highlights are stickied
+
+    if (!hottestPost) {
+      throw new Error('No valid hottest post found');
+    }
 
     let thumbnailUrl = '';
     if (hottestPost.preview && hottestPost.preview.images) {
@@ -154,13 +162,12 @@ const fetchRedditData = async (subredditName) => {
       subreddit: hottestPost.subreddit,
     };
 
-    console.log("Successful Reddit API call for " + subredditName)
+    console.log("Successful Reddit API call for " + subredditName);
     return postDetails; // Return the post details object
   } catch (error) {
     console.log("Error fetching data from Reddit API for subreddit: " + subredditName, error.message);
   }
 };
-
 
 
 

@@ -5,8 +5,6 @@ const { supabase } = require("../lib/supabase.js");
 const setCreatorData = async () => {
   console.log("executing cron job db-population-runner..." + new Date());
 
-  const reddit = fetchRedditData('xqcow')
-
   const { data, error } = await supabase.from("creators-data").select();
   if (data) {
     console.log('Checking total of ' + data.length + ' creators');
