@@ -8,4 +8,3 @@ console.log('initial start')
 cron.schedule('0 5,11,17,23 * * *', () => {
 	setCreatorData();
 })
-

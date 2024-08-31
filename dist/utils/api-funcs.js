@@ -83,47 +83,60 @@ const fetchYoutubeData = (channelId) => __awaiter(void 0, void 0, void 0, functi
         console.error("Error fetching the latest Youtube video:" + channelId, error);
     }
 });
-const fetchRedditData = (subredditName) => __awaiter(void 0, void 0, void 0, function* () {
+
+const fetchRedditData = async (subredditName) => {
     try {
-        const redditEndpoint = "https://www.reddit.com/";
-        const subredditEndpoint = `r/${subredditName}/`;
-        const params = {
-            sort: "top", // sort by top posts
-            t: "day", // within the last day
-            limit: 1, // limit to 1 result (the hottest post)
-        };
-        // Make GET request to Reddit API
-        const response = yield axios.get(`${redditEndpoint}${subredditEndpoint}top.json`, {
-            params: params,
-        });
-        // Extract the hottest post from the response
-        const hottestPost = response.data.data.children[0].data;
-        // Determine the best thumbnail URL
-        let thumbnailUrl = hottestPost.thumbnail;
-        // Check for a better image in the preview field
-        if (hottestPost.preview && hottestPost.preview.images.length > 0) {
-            const highestRes = hottestPost.preview.images[0].resolutions.length - 1;
-            thumbnailUrl = hottestPost.preview.images[0].resolutions[highestRes].url;
-            thumbnailUrl = decodeURIComponent(thumbnailUrl);
-            // Replace HTML entities like &amp; with &
-            thumbnailUrl = thumbnailUrl.replace(/&amp;/g, '&');
-        }
-        // Decode the URL if necessary
-        // Store information of latest reddit post as an object
-        const postDetails = {
-            title: hottestPost.title,
-            url: "https://www.reddit.com" + hottestPost.permalink,
-            thumbnail: thumbnailUrl,
-            author: hottestPost.author,
-            subreddit: hottestPost.subreddit,
-        };
-        console.log("Successful Reddit API call for " + subredditName + " at " + new Date().toLocaleString());
-        return postDetails;
+      const token = await getRedditAccessToken();
+  
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'User-Agent': `subbit/1.0 by ${process.env.REDDIT_USERNAME}`,
+      };
+  
+      // Fetch the top 10 hot posts to have more posts to choose from
+      const response = await axios.get(
+        `https://oauth.reddit.com/r/${subredditName}/hot?limit=10`,
+        { headers }
+      );
+  
+      // Find the first post that is not a community highlight
+      const hottestPost = response.data.data.children
+        .map(post => post.data)
+        .find(post => !post.stickied); // Assuming community highlights are stickied
+
+      console.log('hello')
+      console.log(hottestPost.title)
+  
+      if (!hottestPost) {
+        throw new Error('No valid hottest post found');
+      }
+  
+      let thumbnailUrl = '';
+      if (hottestPost.preview && hottestPost.preview.images) {
+        const highestRes = hottestPost.preview.images[0].resolutions.length - 1;
+        thumbnailUrl = hottestPost.preview.images[0].resolutions[highestRes].url;
+  
+        // Decode the URL and replace HTML entities
+        thumbnailUrl = decodeURIComponent(thumbnailUrl).replace(/&amp;/g, '&');
+      }
+  
+      // Store information of the hottest Reddit post as an object
+      const postDetails = {
+        title: hottestPost.title,
+        url: "https://www.reddit.com" + hottestPost.permalink,
+        text: hottestPost.selftext,
+        thumbnail: thumbnailUrl,
+        author: hottestPost.author,
+        subreddit: hottestPost.subreddit,
+      };
+  
+      console.log("Successful Reddit API call for " + subredditName);
+      return postDetails; // Return the post details object
+    } catch (error) {
+      console.log("Error fetching data from Reddit API for subreddit: " + subredditName, error.message);
     }
-    catch (error) {
-        console.error("Error fetching data from Reddit API for :" + subredditName, error);
-    }
-});
+  };
+  
 const fetchTwitchData = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     if (userId === null) {
         console.log("no twitch id supplied for this creator");
