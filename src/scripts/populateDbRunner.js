@@ -1,5 +1,6 @@
 const { fetchYoutubeData, fetchTwitchData } = require("../utils/api-funcs.js");
 const { fetchRedditData } = require("../utils/api-funcs.js");
+const { fetchInstagramPost, fetchTikTokVideo } = require("../utils/apify-funcs.js")
 const { supabase } = require("../lib/supabase.js");
 
 const setYouTubeCreatorData = async () => {
@@ -15,6 +16,29 @@ const setYouTubeCreatorData = async () => {
         .from("creators")
         .update({
           youtube: youtubeData
+        })
+        .eq("creator", creator.creator);
+
+      if (error) console.log(error);
+    });
+  }
+  if (error) console.log(error);
+
+};
+
+const setInstagramCreatorData = async () => {
+  console.log("executing cron job Instagram data population at " + new Date());
+
+  const { data, error } = await supabase.from("creators-data").select();
+  if (data) {
+    console.log('Checking total of ' + data.length + ' creators');
+    console.log('--------------------------------------------------')
+    data.map(async (creator, index) => {
+      const instagramData = await fetchYoutubeData(creator.instagram);
+      const { error } = await supabase
+        .from("creators")
+        .update({
+          instagram: instagramData
         })
         .eq("creator", creator.creator);
 
@@ -76,4 +100,27 @@ const setRedditCreatorData = async () => {
 
 };
 
-module.exports = { setYouTubeCreatorData, setTwitchCreatorData, setRedditCreatorData };
+const setTikTokCreatorData = async () => {
+  console.log("executing cron job TikTok data population at " + new Date());
+
+  const { data, error } = await supabase.from("creators-data").select();
+  if (data) {
+    console.log('Checking total of ' + data.length + ' creators');
+    console.log('--------------------------------------------------')
+    data.map(async (creator, index) => {
+      const tiktokData = await fetchYoutubeData(creator.tiktok);
+      const { error } = await supabase
+        .from("creators")
+        .update({
+          tiktok: tiktokData
+        })
+        .eq("creator", creator.creator);
+
+      if (error) console.log(error);
+    });
+  }
+  if (error) console.log(error);
+
+};
+
+module.exports = { setYouTubeCreatorData, setTwitchCreatorData, setRedditCreatorData, setInstagramCreatorData, setTikTokCreatorData };
