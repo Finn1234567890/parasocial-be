@@ -102,12 +102,14 @@ const setRedditCreatorData = async () => {
 
 const setTikTokCreatorData = async () => {
   console.log("executing cron job TikTok data population at " + new Date());
+  
 
   const { data, error } = await supabase.from("creators-data").select();
   if (data) {
     console.log('Checking total of ' + data.length + ' creators');
     console.log('--------------------------------------------------')
-    data.map(async (creator, index) => {
+    data.map(async (creator) => {
+      setTimeout(() => {}, 10000);
       const tiktokData = await fetchTikTokVideo(creator.tiktok);
       const { error } = await supabase
         .from("creators")
