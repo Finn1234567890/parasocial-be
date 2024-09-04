@@ -106,12 +106,11 @@ async function fetchInstagramPost(creator) {
       const run = await apifyClient.actor(actorId).call(input);
   
       const results = await apifyClient.dataset(run.defaultDatasetId).listItems();
-      console.log(results)
-  
+ 
       const InstagramPostData = {
         title: results.items[0].caption,
         url: results.items[0].url,
-        author: results.items[0].author.ownerUsername,
+        author: results.items[0].ownerUsername,
         thumbnailUrl: results.items[0].images,
       };
   

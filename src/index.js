@@ -15,12 +15,12 @@ cron.schedule('0 13 * * *', () => {
 	setTikTokCreatorData();
 })
 
-cron.schedule('0 14 * * *', () => { 
+cron.schedule('5 14 * * *', () => { 
 	setInstagramCreatorData();
 })
 
 
-cron.schedule('*/30 * * * *', () => { //every 30 minutes
+cron.schedule('*/31 * * * *', () => { //every 30 minutes
 	setTwitchCreatorData();
 })
 

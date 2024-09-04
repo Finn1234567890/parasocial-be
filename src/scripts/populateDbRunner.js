@@ -34,7 +34,7 @@ const setInstagramCreatorData = async () => {
     console.log('Checking total of ' + data.length + ' creators');
     console.log('--------------------------------------------------')
     data.map(async (creator, index) => {
-      const instagramData = await fetchYoutubeData(creator.instagram);
+      const instagramData = await fetchInstagramPost(creator.instagram);
       const { error } = await supabase
         .from("creators")
         .update({
@@ -108,7 +108,7 @@ const setTikTokCreatorData = async () => {
     console.log('Checking total of ' + data.length + ' creators');
     console.log('--------------------------------------------------')
     data.map(async (creator, index) => {
-      const tiktokData = await fetchYoutubeData(creator.tiktok);
+      const tiktokData = await fetchTikTokVideo(creator.tiktok);
       const { error } = await supabase
         .from("creators")
         .update({
