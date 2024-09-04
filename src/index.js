@@ -11,7 +11,7 @@ cron.schedule('*/32 * * * *', () => { //every 30 minutes
 	setRedditCreatorData();
 })
 
-cron.schedule('10 23 * * *', () => { 
+cron.schedule('35 23 * * *', () => { 
 	setTikTokCreatorData();
 })
 
