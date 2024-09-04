@@ -9,15 +9,17 @@ if(!hashtag) return null
 
   const actorId = "clockworks/free-tiktok-scraper";
   const input = {
-    excludePinnedPosts: false,
-    hashtags: [hashtag],
-    resultsPerPage: 1,
-    shouldDownloadCovers: false,
-    shouldDownloadSlideshowImages: false,
-    shouldDownloadSubtitles: false,
-    shouldDownloadVideos: false,
-  };
-
+    "excludePinnedPosts": true,
+    "maxProfilesPerQuery": 1,
+    "searchQueries": [
+        hashtag
+    ],
+    "searchSection": "/video",
+    "shouldDownloadCovers": false,
+    "shouldDownloadSlideshowImages": false,
+    "shouldDownloadSubtitles": false,
+    "shouldDownloadVideos": false
+}
   try {
     const run = await apifyClient.actor(actorId).call(input);
 
