@@ -2,16 +2,13 @@ const axios = require('axios')
 const { setYouTubeCreatorData, setRedditCreatorData, setTwitchCreatorData, setTikTokCreatorData, setInstagramCreatorData } = require('./scripts/populateDbRunner.js')
 const cron = require('node-cron')
 
-
 console.log('initial start')
-
-
 
 cron.schedule('*/32 * * * *', () => { //every 30 minutes
 	setRedditCreatorData();
 })
 
-cron.schedule('0 7 * * *', () => { 
+cron.schedule('0 12 * * *', () => { 
 	setTikTokCreatorData();
 })
 
@@ -25,7 +22,7 @@ cron.schedule('*/31 * * * *', () => { //every 30 minutes
 })
 
 
-cron.schedule('0 5,11,17,23 * * *', () => { //every 6 hours
+cron.schedule('0 5,11,17 * * *', () => { //every 6 hours
 	setYouTubeCreatorData();
 })
 
