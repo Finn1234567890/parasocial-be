@@ -21,4 +21,4 @@ const getUserId = async (username) => {
     }
   };
 
-  getUserId('Papaplatte')
+  getUserId('trymacs')
