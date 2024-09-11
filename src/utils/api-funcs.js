@@ -145,7 +145,7 @@ const fetchYoutubeData = async (channelId) => {
 
     const videoUrl = `https://www.youtube.com/watch?v=${videoData.id.videoId}`;
 
-    const timeAgo = timeAgoISO(videoData.snipped.publishedAt)
+    const timeAgo = timeAgoISO(videoData.snippet.publishedAt)
 
     const videoDetails = {
       videoUrl: videoUrl,
