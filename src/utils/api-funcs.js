@@ -246,7 +246,7 @@ const fetchTwitchData = async (userId) => {
 
     return streamDetails;
   } catch (error) {
-    console.error("Error fetching user stream from user id:" + userId, error);
+    console.log("Error fetching user stream from user id:" + userId, error);
   }
 };
 
@@ -262,7 +262,7 @@ const fetchTwitchBroadcast = async (userId) => {
 
     return response.data.data[0];
   } catch (error) {
-    console.error("Error fetching user broadcast:", error);
+    console.log("Error fetching user broadcast:", error);
   }
 };
 
