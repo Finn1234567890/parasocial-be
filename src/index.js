@@ -5,7 +5,7 @@ const { resetUserSearches, resetUserCreates } = require('./scripts/userSearchesR
 
 console.log('initial start')
 
-cron.schedule('7 8 * * *', () => { 
+cron.schedule('21 8 * * *', () => { 
 	resetUserSearches();
 	resetUserCreates()
 })
