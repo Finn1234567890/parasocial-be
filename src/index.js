@@ -5,7 +5,7 @@ const { resetUserSearches, resetUserCreates } = require('./scripts/userSearchesR
 
 console.log('initial start')
 
-cron.schedule('2 8 * * *', () => { 
+cron.schedule('7 8 * * *', () => { 
 	resetUserSearches();
 	resetUserCreates()
 })
@@ -20,7 +20,7 @@ cron.schedule('0 12 * * *', () => {
 
 cron.schedule('5 14 * * *', () => { 
 	setInstagramCreatorData();
-})
+}) 
 
 
 cron.schedule('*/31 * * * *', () => { //every 30 minutes
