@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node src/test.js",
     "twitch-user-id": "node src/scripts/fetchTwitchUserId.js",
+    "search-reset": "node src/scripts/userSearchesReset.js",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
