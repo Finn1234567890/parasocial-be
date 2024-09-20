@@ -1,28 +1,6 @@
 const Apify = require("apify");
+const { calcTimeAgo } = require("./util-funcs")
 require("dotenv").config();
-
-function timeAgoMilli(timestamp) {
-  // Convert the timestamp from seconds to milliseconds
-  const timeInMilliseconds = timestamp * 1000;
-
-  // Get the current time in milliseconds
-  const currentTime = Date.now();
-
-  // Calculate the time difference in milliseconds
-  const timeDifference = currentTime - timeInMilliseconds;
-
-  // Convert time difference to hours
-  const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
-
-  if (hoursAgo < 12) {
-      return `${hoursAgo} hours ago`;
-  } else if (hoursAgo < 24) {
-      return `1 day ago`;
-  } else {
-      const daysAgo = Math.floor(hoursAgo / 24);
-      return `${daysAgo} days ago`;
-  }
-}
 
 
 async function fetchTikTokVideo(hashtag) {
@@ -49,7 +27,7 @@ if(!hashtag) return null
 
     const results = await apifyClient.dataset(run.defaultDatasetId).listItems();
 
-    const timeAgo = timeAgoMilli(results.items[0].createTime)
+    const timeAgo = calcTimeAgo(results.items[0].createTime, 'milli')
 
     const tiktokVideoData = {
       title: results.items[0].text,

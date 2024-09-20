@@ -1,8 +1,14 @@
 const axios = require('axios')
 const { setYouTubeCreatorData, setRedditCreatorData, setTwitchCreatorData, setTikTokCreatorData, setInstagramCreatorData } = require('./scripts/populateDbRunner.js')
 const cron = require('node-cron')
+const { resetUserSearches, resetUserCreates } = require('./scripts/userSearchesReset')
 
 console.log('initial start')
+
+cron.schedule('52 7 * * *', () => { 
+	resetUserSearches();
+	resetUserCreates()
+})
 
 cron.schedule('*/32 * * * *', () => { //every 30 minutes
 	setRedditCreatorData();
