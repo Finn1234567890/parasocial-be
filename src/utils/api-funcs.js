@@ -1,52 +1,7 @@
 const axios = require("axios");
 const qs = require('qs')
+const { calcTimeAgo } = require("./util-funcs.js")
 require("dotenv").config();
-
-function timeAgoMilli(timestamp) {
-  // Convert the timestamp from seconds to milliseconds
-  const timeInMilliseconds = timestamp * 1000;
-
-  // Get the current time in milliseconds
-  const currentTime = Date.now();
-
-  // Calculate the time difference in milliseconds
-  const timeDifference = currentTime - timeInMilliseconds;
-
-  // Convert time difference to hours
-  const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
-
-  if (hoursAgo < 12) {
-      return `${hoursAgo} hours ago`;
-  } else if (hoursAgo < 24) {
-      return `1 day ago`;
-  } else {
-      const daysAgo = Math.floor(hoursAgo / 24);
-      return `${daysAgo} days ago`;
-  }
-}
-
-function timeAgoISO(isoDate) {
-  // Convert the ISO 8601 date string to a JavaScript Date object
-  const pastDate = new Date(isoDate);
-
-  // Get the current time
-  const currentTime = new Date();
-
-  // Calculate the time difference in milliseconds
-  const timeDifference = currentTime - pastDate;
-
-  // Convert time difference to hours
-  const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
-
-  if (hoursAgo < 12) {
-      return `${hoursAgo} hours ago`;
-  } else if (hoursAgo < 24) {
-      return `1 day ago`;
-  } else {
-      const daysAgo = Math.floor(hoursAgo / 24);
-      return `${daysAgo} days ago`;
-  }
-}
 
 
 // Function to get access token
@@ -145,7 +100,7 @@ const fetchYoutubeData = async (channelId) => {
 
     const videoUrl = `https://www.youtube.com/watch?v=${videoData.id.videoId}`;
 
-    const timeAgo = timeAgoISO(videoData.snippet.publishedAt)
+    const timeAgo = calcTimeAgo(videoData.snippet.publishedAt, 'iso')
 
     const videoDetails = {
       videoUrl: videoUrl,
@@ -200,9 +155,6 @@ const fetchRedditData = async (subredditName) => {
       // Decode the URL and replace HTML entities
       thumbnailUrl = decodeURIComponent(thumbnailUrl).replace(/&amp;/g, '&');
     }
-
-    const timeAgo = timeAgoMilli(hottestPost.created)
-
     // Store information of the hottest Reddit post as an object
     const postDetails = {
       title: hottestPost.title,
