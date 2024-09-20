@@ -4,7 +4,9 @@ const resetUserSearches = async () => {
   console.log("resseting searches");
   const { error } = await supabase
     .from("users")
-    .update({ search_restriction: 3 });
+    .update({ search_restriction: 3 })
+    .is('user_id', null)
+    
 
   if (error) {
     console.log("There was an error resetting search_restriction", error);
@@ -17,13 +19,14 @@ const resetUserCreates = async () => {
   console.log("resetting creates");
   const { error } = await supabase
     .from("users")
-    .update({ create_restriction: 1 }); // Corrected to use an object
+    .update({ create_restriction: 1 })
+    .is('user_id', null)
 
   if (error) {
     console.log("There was an error resetting create_restriction", error);
   } else {
     console.log("Successfully reset create restrictions");
-    
+
   }
 };
 
