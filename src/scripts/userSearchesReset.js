@@ -5,7 +5,7 @@ const resetUserSearches = async () => {
   const { error } = await supabase
     .from("users")
     .update({ search_restriction: 3 })
-    .is('user_id', null)
+    .not('user_id', 'is', null)
     
 
   if (error) {
@@ -20,7 +20,7 @@ const resetUserCreates = async () => {
   const { error } = await supabase
     .from("users")
     .update({ create_restriction: 1 })
-    .is('user_id', null)
+    .not('user_id', 'is', null)
 
   if (error) {
     console.log("There was an error resetting create_restriction", error);
@@ -29,5 +29,8 @@ const resetUserCreates = async () => {
 
   }
 };
+
+resetUserCreates()
+resetUserSearches()
 
 module.exports = { resetUserSearches, resetUserCreates };
